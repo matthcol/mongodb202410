@@ -35,6 +35,7 @@ docker compose exec -it mongo mongosh -u root -p example
 mongosh                     (instance, base test, no auth)
 mongosh -u root -p          (user + password interactif)  
 mongosh -u root -p example  (user + password)
+mongosh -u root -p example --authenticationDatabase admin movies
 
 ### commands in mongosh
 show dbs
@@ -42,3 +43,20 @@ show databases
 
 use mydb
 show collections
+
+db.titles.insertOne({ title: 'Le Robot Sauvage', year: 2024 })
+
+db.titles.insertOne({ 
+    title: 'Matrix', 
+    year: 1999 
+})
+
+load('00-init.js')
+
+db.titles.find()
+db.titles.find({})
+
+## Import
+mongoimport --username=root --password=example --db=movies \
+    --authenticationDatabase=admin \
+    --collection=titles2 --file=titles.json --jsonArray --type=json
