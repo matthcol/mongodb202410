@@ -57,6 +57,20 @@ db.titles.find()
 db.titles.find({})
 
 ## Import
+```
 mongoimport --username=root --password=example --db=movies \
     --authenticationDatabase=admin \
     --collection=titles2 --file=titles.json --jsonArray --type=json
+```
+
+```
+mongoimport --username=root --password=example --db=movies \
+    --authenticationDatabase=admin \
+    --collection=names --file=names.json --jsonArray --type=json
+```
+
+```
+mongoimport --username=root --password=example --db=movies2 \
+    --authenticationDatabase=admin \
+    --collection=names --file=name.basics.tsv --headerline --type=tsv
+```
