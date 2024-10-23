@@ -1,0 +1,37 @@
+{
+    $jsonSchema: {
+      bsonType: 'object',
+      title: 'Student Object Validation',
+      required: [
+        '_id',
+        'imdbId',
+        'primaryName'
+      ],
+      properties: {
+        _id: {
+          bsonType: 'objectId'
+        },
+        imdbId: {
+          bsonType: 'string',
+          description: ''
+        },
+        primaryName: {
+          bsonType: 'string',
+          description: ''
+        },
+        birthYear: {
+          bsonType: [
+            'int'
+          ],
+          description: ''
+        },
+        deathYear: {
+          bsonType: [
+            'int'
+          ],
+          description: ''
+        }
+      },
+      additionalProperties: false
+    }
+  }

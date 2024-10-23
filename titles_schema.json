@@ -1,0 +1,42 @@
+{
+    $jsonSchema: {
+      bsonType: 'object',
+      properties: {
+        tconst: {
+          bsonType: 'string',
+          pattern: '^tt[0-9]{6,}$'
+        },
+        startYear: {
+          bsonType: 'int',
+          minimum: 1888
+        },
+        director: {
+          bsonType: 'object',
+          properties: {
+            imdbId: {
+              bsonType: 'string',
+              pattern: '^nm[0-9]{6,}$'
+            },
+            primaryName: {
+              bsonType: 'string'
+            }
+          }
+        },
+        actors: {
+          bsonType: 'array',
+          items: {
+            bsonType: 'object',
+            properties: {
+              imdbId: {
+                bsonType: 'string',
+                pattern: '^nm[0-9]{6,}$'
+              },
+              primaryName: {
+                bsonType: 'string'
+              }
+            }
+          }
+        }
+      }
+    }
+  }

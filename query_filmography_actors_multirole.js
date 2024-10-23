@@ -142,9 +142,10 @@ db.titles3.aggregate(
     {
       $project: {
         roleCount: 1,
-        movieCount: {
-          $size: "$filmography"
-        },
+        // NB: Pour l'exemple, mis dans l'etape suivante: addFields
+        // movieCount: {
+        //   $size: "$filmography"
+        // },
         genres: {
           $sortArray: {
             input: "$genres",
@@ -164,9 +165,14 @@ db.titles3.aggregate(
         }
       }
     },
+    { $addFields: {
+      movieCount: {
+          $size: "$filmography"
+      },
+    }},
     {
       $sort: {
         movieCount: -1
       }
     }
-])
+]) // .explain("executionStats")
