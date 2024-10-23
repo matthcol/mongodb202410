@@ -1,4 +1,9 @@
 // cleanup dataset titles3
+// load('cleanup.js')
+
+db.titles3.deleteMany({
+    isAdult: 1
+})
 
 db.titles3.updateMany(
     { runtimeMinutes: {$regex: "[^0-9]"} }, // filter
@@ -20,14 +25,8 @@ db.titles3.updateMany(
     }} // update operator
 )
 
-
-
-db.titles3.deleteMany({
-    isAdult: 1
-})
-// { acknowledged: true, deletedCount: 358373 }
-
-// NB: use convert if errors can occur (null is not an error)
+// NB1: use convert if errors can occur (null is not an error)
+// NB2: autre methode: utiliser aggregation + $set
 db.titles3.updateMany(
     {},
     [  // Important: les operateurs d'agregations ne marchent qu'en mode pipeline !

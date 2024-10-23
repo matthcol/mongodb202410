@@ -145,3 +145,88 @@ db.titles3.updateMany(
 
 // drop
 db.titles2.drop()
+
+// aggregation (suite)
+db.titles3.aggregate([
+    { $match: { titleType: 'movie', startYear: {$ne: null} }},
+    { $group: {
+        _id: {"year": "$startYear"},
+        movieCount: {$count: {}},
+        runtimeMin: {$min: "$runtimeMinutes"}, 
+        runtimeMax: {$max: "$runtimeMinutes"}, 
+        runtimeMean: {$avg: "$runtimeMinutes"}, 
+        runtimeMedian: {$median: { input: "$runtimeMinutes", method: 'approximate'}}, 
+        runtimeQuartiles: {$percentile: {input: "$runtimeMinutes", p: [0.25, 0.5, 0.75], method: 'approximate'}}, 
+    }},
+    { $sort: {"_id.year": -1} }
+])
+
+// group by decade
+
+db.titles3.aggregate([
+    { $match: { titleType: 'movie', startYear: {$ne: null} }},
+    { $group: {
+        _id: {"decade": {$floor: {$divide: ["$startYear", 10]}}},
+        movieCount: {$count: {}},
+        runtimeMin: {$min: "$runtimeMinutes"}, 
+        runtimeMax: {$max: "$runtimeMinutes"}, 
+        runtimeMean: {$avg: "$runtimeMinutes"}, 
+        runtimeMedian: {$median: { input: "$runtimeMinutes", method: 'approximate'}}, 
+        runtimeQuartiles: {$percentile: {input: "$runtimeMinutes", p: [0.25, 0.5, 0.75], method: 'approximate'}}, 
+        firstYear: {$min: "$startYear"},
+        lastYear: {$max: "$startYear"},
+    }},
+    { $sort: {"_id.decade": -1} }
+])
+
+// casting
+
+db.titles3.aggregate([
+    { $match: { titleType: 'movie', primaryTitle: "Face/Off",  startYear: {$ne: null} } },
+    { $unwind: {
+        path: "$actors"
+    }},
+    { $unwind: {
+        path: "$actors.characters"
+    }},
+    { $project: {
+        actorImdbid: "$actors.imdbId",
+        actor: "$actors.primaryName",
+        role: "$actors.characters",
+        movie: "$primaryTitle",
+        year: "$startYear",
+        _id: 0
+    }}
+])
+
+// ajouter l'annee de naissance et age de l'actor
+db.titles3.aggregate([
+    { $match: { titleType: 'movie', primaryTitle: "Face/Off",  startYear: {$ne: null} } },
+    { $unwind: {
+        path: "$actors"
+    }},
+    { $unwind: "$actors.characters" },
+    { $lookup: {
+        from: "names",
+        localField: "actors.imdbId",
+        foreignField: "imdbId",
+        as: "actorDetails"
+    }},
+    { $unwind: "$actorDetails" }, // key unique => 1
+    { $project: {
+        actorImdbid: "$actors.imdbId",
+        actor: "$actors.primaryName",
+        birthYear: "$actorDetails.birthYear",
+        age: { $subtract: ["$startYear", "$actorDetails.birthYear"] },
+        ageNow: { $subtract: [{$year: new Date()}, "$actorDetails.birthYear"] },
+        role: "$actors.characters",
+        movie: "$primaryTitle",
+        movieYear: "$startYear",
+        // actorDetails: 1, // TODO: pick your data
+        _id: 0
+    }}
+])
+
+// filmographie: director (1), actor (2)
+// 1. filters: movies only, années 80
+// 2. threshold: minDirecting, minActing

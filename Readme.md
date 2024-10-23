@@ -74,3 +74,9 @@ mongoimport --username=root --password=example --db=movies2 \
     --authenticationDatabase=admin \
     --collection=names --file=name.basics.tsv --headerline --type=tsv
 ```
+
+```
+mongoimport --username=root --password=example --db=movies \
+    --authenticationDatabase=admin \
+    --collection=titles3 --file=titles_all.json --jsonArray --type=json
+```

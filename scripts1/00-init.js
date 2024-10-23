@@ -53,7 +53,6 @@ db.titles.insertMany([
             }
         ]
     },
-    ,
     {
         imdbId: 'tt2381249',
         title: 'Mission: Impossible - Rogue Nation',
